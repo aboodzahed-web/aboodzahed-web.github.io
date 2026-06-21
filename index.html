@@ -235,6 +235,49 @@
       margin: 12mm 14mm;   /* standard document margins, no need to change in dialog */
     }
   }
+
+  /* ── Save as PDF button ── */
+  #pdf-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: #0F2044;
+    color: white;
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-size: 9pt;
+    font-family: Calibri, 'Segoe UI', Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.22);
+    user-select: none;
+    letter-spacing: 0.03em;
+    z-index: 100;
+    transition: background 0.15s;
+  }
+  #pdf-btn:hover { background: #1D4ED8; }
+
+  /* ── Page break markers ── */
+  .pg-break {
+    position: absolute;
+    left: -36px;
+    right: -36px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    z-index: 9;
+  }
+  .pg-break-line { flex: 1; border-top: 2px dashed #CBD5E1; }
+  .pg-break-label {
+    padding: 0 12px;
+    font-size: 7.5pt;
+    color: #94A3B8;
+    font-family: Calibri, 'Segoe UI', Arial, sans-serif;
+    background: #CBD5E1;
+    border-radius: 10px;
+    white-space: nowrap;
+    line-height: 18px;
+  }
 </style>
 </head>
 <body>
@@ -429,15 +472,29 @@
 
 </div>
 
-<!-- Print hint (screen only, hidden in print) -->
-<div style="position:fixed;bottom:12px;right:12px;font-size:8pt;color:#475569;background:white;
-  padding:6px 12px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.15);
-  display:block;" class="no-print">
-  To PDF: Ctrl+P &rarr; Save as PDF &rarr; Margins: <b>Default</b> &rarr; Background graphics: <b>ON</b>
+<!-- Save as PDF button (hidden in print) -->
+<div id="pdf-btn" class="no-print" onclick="window.print()" title="Ctrl+P to save as PDF">
+  &#128196;&nbsp; Save as PDF
 </div>
-<style>
-  @media print { .no-print { display: none !important; } }
-</style>
+
+<!-- Page break markers injected by JS (hidden in print) -->
+<script>
+(function() {
+  var PAGE_H_PX = 273 * (96 / 25.4); // 297mm A4 minus 12mm top + 12mm bottom margins
+  document.body.style.position = 'relative';
+  var total = document.body.scrollHeight;
+  for (var pg = 2, y = PAGE_H_PX; y < total - 40; y += PAGE_H_PX, pg++) {
+    var m = document.createElement('div');
+    m.className = 'pg-break no-print';
+    m.style.top = Math.round(y) + 'px';
+    m.innerHTML =
+      '<div class="pg-break-line"></div>' +
+      '<span class="pg-break-label">Page ' + pg + '</span>' +
+      '<div class="pg-break-line"></div>';
+    document.body.appendChild(m);
+  }
+})();
+</script>
 
 <!-- Structured data for the CV Quick-Copy Chrome extension (Tier 1 parsing) -->
 <script type="application/json" id="cv-data">{"schema_version": 2, "name": "Abed Zahed", "first_name": "Abed", "last_name": "Zahed", "prefix": "Mr.", "headline": "RF & Wireless Systems Engineer | Telecom & Wireless Sensing | Engineering Lead", "job_title": "General Application", "company": "Abed Zahed", "contact": {"email": "Abed.h.Zahed@gmail.com", "phone": "+971 58 522 8014", "phone_local": "58 522 8014", "location": "Sharjah, UAE", "city": "Sharjah", "state": "Sharjah", "linkedin": "linkedin.com/in/abdzahed"}, "summary": "RF and wireless systems engineer with 5+ years at Ericsson (led MRC/MRCx implementation, 2.7 dB signal gain; MATLAB, Python, and FPGA test bench for SISO/XPIC/MIMO) and Veoneer (65% to 98% production turnaround via root cause analysis). M.Sc. Wireless, Photonics and Space Engineering, Chalmers; B.Sc. Electrical Engineering, AUS; 4 IEEE publications in RF sensing.", "skills": ["RF engineering", "wireless systems", "Technical Training & Knowledge Transfer", "Regulatory Compliance (ETSI / ANSI / IEC)", "Cross-functional Team Leadership", "TDRA / UAE Telecom Regulatory Coordination", "Odoo ERP (Inventory & POS)", "Wireless & Microwave Systems (LTE/5G, Radio Links)", "RF Testing, Validation & Performance Analysis", "RF Lab Equipment and Instrumentation (VNA, Spectrum Analyzer, Signal Generators, Network Analyzers)", "Electronics Testing and Diagnostics (RF systems, channel emulation, performance validation)", "Circuit and PCB Design (RF antenna PCBs, fractal antennas, diagnostic test setups; Altium)", "RF Front-End Systems (LNAs, PAs, mixers, filters, T/R modules; systems-level design)", "Digital Signal Processing (DSP)", "Machine Learning (ANN, SVM , RF sensing classification)", "MIMO / XPIC / SISO channel modeling", "Antenna Prototyping (patch antennas, fractal antennas, fabrication and measurement)", "End-to-End RF Design and Prototyping (concept through simulation, fabrication, and measured characterization)", "Antenna Systems & Measurements", "Radiation Pattern Measurement (2D/3D antenna characterization, anechoic chamber and HV lab)", "RF Circuits (PCB antenna feed networks, 50Ω impedance matching, coaxial feeds)", "Transmission Line Theory (applied in antenna impedance design and RF circuit matching)", "Radar Systems (architecture, waveforms, link budgets, signal processing)", "Remote Sensing", "Image Processing (signal and image analysis)", "Satellite Systems & GNSS (positioning, tracking, deep space data processing)", "Satellite Communications (Satcoms) , Chalmers + Onsala Space Observatory", "Radio Astronomy & Interferometry", "MRC / MRCx combining techniques", "FPGA channel emulation (ChEmu)", "MATLAB", "Python (test automation, data analysis)", "Simulink", "HFSS", "ADS, CST Microwave Studio (EM simulation)", "Power BI", "Jira", "Confluence", "Fiber OSP/ISP oversight (splicing, OTDR analysis, routing)", "DWDM / SDH / IP-MPLS (transmission network integration)", "Structured cabling, cabling standards, and shop drawing review", "FAT/SAT, commissioning, site inspections, and handover documentation", "AutoCAD (telecom shop drawings)"], "experience": [{"title": "Consultant Engineer", "company": "Fun Robotics", "location": "Dubai, UAE", "dates": "11/2024 - 08/2025", "start_month": "11", "start_year": "2024", "end_month": "08", "end_year": "2025", "is_current": false, "bullets": ["Coordinated between engineering teams, UAE TDRA, and training partners to ensure delivery alignment with UAE telecom regulatory requirements.", "Collaborated with TDRA to design and deliver technical workshops, including curriculum development and coordination with Etisalat Academy.", "Led a team to develop and deliver technical training on wireless communications and RF systems.", "Audited technical training materials for accuracy; mentored junior trainers on curriculum design, assessment, and delivery."]}, {"title": "Tech Consultant", "company": "Mpya Sci & Tech", "location": "Gothenburg, Sweden", "dates": "10/2020 - 08/2024", "start_month": "10", "start_year": "2020", "end_month": "08", "end_year": "2024", "is_current": false, "bullets": ["Deployed as engineering consultant across Ericsson and Veoneer client sites via Mpya Sci & Tech's professional-services model.", "Contributed to internal Mpya initiatives; held After-Work Committee Coordinator and Consultant Buddy roles supporting team culture and new consultant onboarding."]}, {"title": "Microwave DSP Config Developer (Consultant)", "company": "Ericsson", "location": "Gothenburg, Sweden", "dates": "03/2022 - 12/2023", "start_month": "03", "start_year": "2022", "end_month": "12", "end_year": "2023", "is_current": false, "bullets": ["Conducted system testing via FPGA channel emulator (ChEmu): selective fading, channel fading, cross-polar discrimination, modulation switch-up/down sensitivity, and noise level analysis.", "Led project for a team of 4 engineers, structuring testing methodologies aligned with ETSI, ANSI, and IEC standards.", "Implemented MRC and novel MRCx combining on XPIC channel modes for Ericsson MiniLink; achieved 2.7 dB signal power gain.", "Developed MATLAB and Python test bench for MiniLink validating SISO, XPIC, and MIMO channel configurations end-to-end."]}, {"title": "Process Engineer (Consultant)", "company": "Veoneer / Magna International", "location": "Vårgårda, Sweden", "dates": "11/2020 - 01/2022", "start_month": "11", "start_year": "2020", "end_month": "01", "end_year": "2022", "is_current": false, "bullets": ["Improved machine performance from 65% to 98% by leading a team of 3 optics engineers in troubleshooting, root cause analysis, and documentation.", "Directed incident and problem resolution for camera production; coordinated cross-functional investigations with production, engineering, and maintenance teams.", "Tracked production efficiency and process capability KPIs via Power BI dashboards and Python pipelines; adopted org-wide for yield monitoring.", "Owned cross-functional coordination as process focal point; synthesized multi-team findings into management reports and ran structured handoffs to operators and maintenance."]}, {"title": "Space Systems Research (M.Sc. Program)", "company": "Onsala Space Observatory / Chalmers University", "location": "Onsala, Sweden", "dates": "2018 - 2019", "start_month": "", "start_year": "2018", "end_month": "", "end_year": "2019", "is_current": false, "bullets": ["Completed research training at Onsala Space Observatory covering satellite communications, link budgets, and space systems engineering as part of M.Sc. in Wireless, Photonics and Space Engineering at Chalmers.", "Operated GNSS tracking and analysis systems, satellite positioning equipment, and antenna dish control systems in an active deep space observatory.", "Conducted deep space data processing and analysis using space-grade RF measurement and data acquisition equipment.", "Applied satellite link budget analysis, positioning algorithms, and RF front-end signal chain design using space-grade measurement and data acquisition equipment."]}, {"title": "Master's Thesis: RF Researcher", "company": "RISE Research Institutes of Sweden", "location": "Borås / Gothenburg, Sweden", "dates": "02/2019 - 06/2019", "start_month": "02", "start_year": "2019", "end_month": "06", "end_year": "2019", "is_current": false, "bullets": ["Increased detection sensitivity by 3x via patch antenna research for transformer partial discharge monitoring.", "Designed and tested a prototype patch antenna using VNA, spectrum analyzer, and signal generators; calibrated test setup demonstrated performance comparable to standardized measurement setups.", "Measured and characterized radiation patterns for the patch antenna prototype; validated gain, return loss, and 50Ω impedance matching across the UHF frequency range.", "Conducted comparative RF measurements against industry-standard sensors using RF lab equipment and published findings."]}, {"title": "Robotics Engineer", "company": "Fun Robotics", "location": "Dubai, UAE", "dates": "06/2016 - 08/2017", "start_month": "06", "start_year": "2016", "end_month": "08", "end_year": "2017", "is_current": false, "bullets": ["Taught wireless communication fundamentals, protocol configuration, embedded systems, and RF signal concepts to students age 7-20.", "Designed comprehensive teaching curricula for diverse robotics and software platforms; adopted as educational resources for the academic industry.", "Designed and manufactured robotic solutions as part of the product development team.", "Created leveled quizzes and hands-on assessments across robotics, embedded systems, and wireless curricula; organized by topic and difficulty tier."]}, {"title": "Visiting Researcher", "company": "American University of Sharjah", "location": "Sharjah, UAE", "dates": "01/2015 - 10/2015", "start_month": "01", "start_year": "2015", "end_month": "10", "end_year": "2015", "is_current": false, "bullets": ["Conducted advanced research on partial discharge analysis using Hilbert fractal antennas; achieved 97% classification accuracy.", "Co-authored 4 IEEE journal and conference publications in RF sensing and diagnostic antenna design.", "Designed PCB-based RF antennas with 50Ω coaxial feeds; applied transmission line theory for impedance matching and optimized RF circuit feed networks.", "Simulated 4th-order Hilbert fractal antenna designs in HFSS; characterized 2D and 3D radiation patterns to verify semi-spherical coverage and directivity at UHF (0.3-6 GHz)."]}], "education": [{"degree": "M.Sc. in Wireless, Photonics, and Space Engineering", "institution": "Chalmers University of Technology", "dates": "2017-2019", "location": "Gothenburg, Sweden", "start_year": "2017", "end_year": "2019", "degree_type": "Master", "field_of_study": "Wireless, Photonics, and Space Engineering", "country": "Sweden", "graduated": "Yes"}, {"degree": "B.Sc. in Electrical Engineering (Minor: Computer Engineering)", "institution": "American University of Sharjah", "dates": "2011-2015", "location": "Sharjah, UAE", "start_year": "2011", "end_year": "2015", "degree_type": "Bachelor", "field_of_study": "Electrical Engineering (Minor: Computer Engineering)", "country": "UAE", "graduated": "Yes"}], "certifications": ["Fundamentals of Engineering (FE), NCEES (2014)", "Data Analysis with Python, IBM / Coursera (Sep 2020)", "Getting Started with Power BI Desktop, Microsoft / Coursera (Nov 2020)"], "publications": ["Y. Shaker, A. Zahed and A. El-Hag, \"Experience with acoustic sensors in partial discharge detection,\" IEEE ICHVE, Chengdu, China, 2016.", "A. A. Zahed et al., \"Comparison of different fourth order Hilbert fractal antennas for partial discharge measurement,\" IEEE Trans. Dielectr. Electr. Insul., vol. 24, no. 1, pp. 175-182, Feb. 2017.", "M. M. Harbaji, A. A. H. Zahed et al., \"Design of Hilbert Fractal Antenna for Partial Discharge Classification in Oil-Paper Insulated System,\" IEEE Sensors J., vol. 17, no. 4, pp. 1037-1045, Feb. 2016.", "M. M. Harbaji, A. A. H. Zahed et al., \"Design of Hilbert fractal antenna for partial discharge detection and classification,\" IEEE EPECS, Sharjah, UAE, 2015."], "key_achievements": ["MRC/MRCx Implementation: Led implementation on Ericsson MiniLink products achieving 2.7 dB gain in received signal power, effectively doubling received power.", "UAE Telecom Training Delivery: Designed and delivered technical training with UAE TDRA in partnership with Etisalat Academy, supporting regulatory capability building.", "Production Performance Turnaround: Improved camera production line performance from 65% to 98% at Veoneer/Magna by leading a team of 3 optics engineers through root cause analysis and corrective action.", "RF Sensing Research: Increased detection sensitivity 3x via patch antenna research at RISE Sweden; co-authored 4 IEEE publications in RF sensing and diagnostic antenna design.", "Operational Analytics: Developed Power BI dashboards adopted org-wide at Veoneer for production yield monitoring and Python-automated data analysis pipelines."], "languages": ["Arabic: Native", "English: Full Professional", "Swedish: Elementary (improving)", "Spanish: Elementary"], "application_info": [{"label": "Authorized to work in your country", "value": "Yes"}, {"label": "Visa sponsorship required for employment", "value": "Yes"}, {"label": "Disability", "value": "No"}, {"label": "Veteran", "value": "No"}, {"label": "Age", "value": "34"}, {"label": "Gender", "value": "Male"}, {"label": "Ethnicity", "value": "Undisclosed"}]}</script>
